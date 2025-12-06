@@ -1,0 +1,64 @@
+import cv2
+import numpy as np
+
+# Funcție dummy pentru trackbars (nu face nimic, dar e necesară ca parametru)
+def empty(a):
+    pass
+
+# Inițializăm fereastra de setări
+cv2.namedWindow("TrackBars")
+cv2.resizeWindow("TrackBars", 640, 240)
+
+# Creăm slidere pentru Hue, Saturation, Value (Min și Max)
+# Valorile implicite sunt setate larg pentru a vedea ceva la început
+cv2.createTrackbar("Hue Min", "TrackBars", 0, 179, empty)
+cv2.createTrackbar("Hue Max", "TrackBars", 179, 179, empty)
+cv2.createTrackbar("Sat Min", "TrackBars", 0, 255, empty)
+cv2.createTrackbar("Sat Max", "TrackBars", 255, 255, empty)
+cv2.createTrackbar("Val Min", "TrackBars", 0, 255, empty)
+cv2.createTrackbar("Val Max", "TrackBars", 255, 255, empty)
+
+# Pornim camera (0 este de obicei webcam-ul default)
+cap = cv2.VideoCapture(0)
+
+print("Apasă 'q' pentru a închide și a vedea valorile în consolă.")
+
+while True:
+    success, img = cap.read()
+    if not success:
+        break
+        
+    # Convertim imaginea din BGR (standard) în HSV (bun pentru culori)
+    imgHSV = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    
+    # Citim valorile curente ale sliderelor
+    h_min = cv2.getTrackbarPos("Hue Min", "TrackBars")
+    h_max = cv2.getTrackbarPos("Hue Max", "TrackBars")
+    s_min = cv2.getTrackbarPos("Sat Min", "TrackBars")
+    s_max = cv2.getTrackbarPos("Sat Max", "TrackBars")
+    v_min = cv2.getTrackbarPos("Val Min", "TrackBars")
+    v_max = cv2.getTrackbarPos("Val Max", "TrackBars")
+    
+    # Creăm masca: tot ce e în intervalul selectat devine ALB, restul NEGRU
+    lower = np.array([h_min, s_min, v_min])
+    upper = np.array([h_max, s_max, v_max])
+    mask = cv2.inRange(imgHSV, lower, upper)
+    
+    # Afișăm rezultatul suprapus colorat (opțional, ca să vezi ce detectezi)
+    imgResult = cv2.bitwise_and(img, img, mask=mask)
+    
+    # Afișăm ferestrele
+    # cv2.imshow("Original", img) # Decomentează dacă vrei să vezi și originalul
+    cv2.imshow("Mask (Alb = Detectat)", mask)
+    cv2.imshow("Result Color", imgResult)
+
+    # Ieșire cu tasta 'q'
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        print("\n--- VALORILE TALE ---")
+        print(f"Lower: [{h_min}, {s_min}, {v_min}]")
+        print(f"Upper: [{h_max}, {s_max}, {v_max}]")
+        print("---------------------")
+        break
+
+cap.release()
+cv2.destroyAllWindows()
