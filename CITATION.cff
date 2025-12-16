@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "This Project uses the EMNIST dataset."
+title: "AirCanvas"
+version: 1.0.0
+authors:
+  - family-names: Stancu
+    given-names: Vlad-Andrei
+date-released: 2025-12-17
+url: "https://github.com/stancuvlad-andrei/AirCanvas.git"
+preferred-citation:
+  type: article
+  authors:
+    - family-names: Cohen
+      given-names: G.
+    - family-names: Afshar
+      given-names: S.
+    - family-names: Tapson
+      given-names: J.
+    - family-names: van Schaik
+      given-names: A.
+  title: "EMNIST: an extension of MNIST to handwritten letters"
+  year: 2017
+  url: "http://arxiv.org/abs/1702.05373"

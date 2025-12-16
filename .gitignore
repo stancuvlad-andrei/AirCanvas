@@ -3,3 +3,9 @@ __pycache__/
 *.pyc
 .vscode/
 .idea/
+
+# Ignore model files
+my_super_model.keras
+
+# Ignore results
+rezultate.txt
